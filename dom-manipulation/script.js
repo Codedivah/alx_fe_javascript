@@ -1,77 +1,92 @@
-// Quote data structure
-let quotes = [
-  {
-    text: "The only way to do great work is to love what you do.",
-    author: "Steve Jobs",
-    category: "motivation"
-  },
-  {
-    text: "Life is what happens to you while you're busy making other plans.",
-    author: "John Lennon",
-    category: "life"
-  },
-  {
-    text: "The future belongs to those who believe in the beauty of their dreams.",
-    author: "Eleanor Roosevelt",
-    category: "dreams"
-  },
-  {
-    text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-    author: "Winston Churchill",
-    category: "success"
-  },
-  {
-    text: "The only impossible journey is the one you never begin.",
-    author: "Tony Robbins",
-    category: "motivation"
-  },
-  {
-    text: "In the end, we will remember not the words of our enemies, but the silence of our friends.",
-    author: "Martin Luther King Jr.",
-    category: "friendship"
-  },
-  {
-    text: "Be yourself; everyone else is already taken.",
-    author: "Oscar Wilde",
-    category: "life"
-  },
-  {
-    text: "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.",
-    author: "Albert Einstein",
-    category: "wisdom"
-  },
-  {
-    text: "A room without books is like a body without a soul.",
-    author: "Marcus Tullius Cicero",
-    category: "wisdom"
-  },
-  {
-    text: "You only live once, but if you do it right, once is enough.",
-    author: "Mae West",
-    category: "life"
-  }
-];
-
-// DOM elements
-const quoteDisplay = document.getElementById('quote-display');
-const quoteAuthor = document.getElementById('quote-author');
-const quoteCategory = document.getElementById('quote-category');
-const categorySelect = document.getElementById('category-select');
-const generateBtn = document.getElementById('generate-btn');
-const addQuoteForm = document.getElementById('add-quote-form');
-const totalQuotesElement = document.getElementById('total-quotes');
-const totalCategoriesElement = document.getElementById('total-categories');
-
-// Initialize the application
-function initializeApp() {
-  populateCategorySelect();
-  updateStatistics();
-  showRandomQuote();
+// Function to display a random quote based on selected category
+function showRandomQuote() {
+  const selectedCategory = categorySelect.value;
+  let filteredQuotes;
   
-  // Event listeners
-  generateBtn.addEventListener('click', showRandomQuote);
-  addQuoteForm.addEventListener('submit', handleAddQuote);
-  categorySelect.addEventListener('change', showRandomQuote);
+  // Filter quotes based on selected category
+  if (selectedCategory === 'all') {
+    filteredQuotes = quotes;
+  } else {
+    filteredQuotes = quotes.filter(quote => quote.category === selectedCategory);
+  }
+  
+  // Handle case when no quotes are available
+  if (filteredQuotes.length === 0) {
+    quoteDisplay.textContent = "No quotes available for this category.";
+    quoteCategory.textContent = "";
+    return;
+  }
+  
+  // Select random quote from filtered array
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const randomQuote = filteredQuotes[randomIndex];
+  
+  // Update DOM with smooth transition
+  quoteDisplay.style.opacity = '0';
+  quoteCategory.style.opacity = '0';
+  
+  setTimeout(() => {
+    quoteDisplay.textContent = `"${randomQuote.text}"`;
+    quoteCategory.textContent = `Category: ${capitalizeFirstLetter(randomQuote.category)}`;
+    
+    quoteDisplay.style.opacity = '1';
+    quoteCategory.style.opacity = '1';
+  }, 150);
+}
+
+// Function to create and handle the add quote form
+function createAddQuoteForm() {
+  const addQuoteForm = document.getElementById('add-quote-form');
+  
+  // Handle form submission
+  addQuoteForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Get form input values
+    const quoteText = document.getElementById('quote-text').value.trim();
+    const categoryName = document.getElementById('quote-category-input').value.trim().toLowerCase();
+    
+    // Validate inputs
+    if (!quoteText || !categoryName) {
+      alert('Please fill in both quote text and category fields.');
+      return;
+    }
+    
+    // Create new quote object with text and category properties
+    const newQuote = {
+      text: quoteText,
+      category: categoryName
+    };
+    
+    // Add new quote to the quotes array
+    quotes.push(newQuote);
+    
+    // Update the DOM dynamically
+    updateDOMAfterAddingQuote();
+    
+    // Clear the form
+    addQuoteForm.reset();
+    
+    // Show success feedback
+    showSuccessMessage('Quote added successfully!');
+    
+    // If the new category is selected or "all" is selected, show the new quote
+    const selectedCategory = categorySelect.value;
+    if (selectedCategory === 'all' || selectedCategory === categoryName) {
+      setTimeout(() => {
+        showRandomQuote();
+      }, 1000);
+    }
+  });
+}
+
+// Update DOM elements after adding a new quote
+function updateDOMAfterAddingQuote() {
+  // Update category dropdown
+  populateCategorySelect();
+  
+  // Update statistics
+  updateStatistics();
 }
 
 // Get unique categories from quotes array
@@ -80,108 +95,35 @@ function getCategories() {
   return categories.sort();
 }
 
-// Populate category select dropdown
+// Populate category select dropdown dynamically
 function populateCategorySelect() {
   const categories = getCategories();
+  const currentSelection = categorySelect.value;
   
   // Clear existing options except "All Categories"
   categorySelect.innerHTML = '<option value="all">All Categories</option>';
   
-  // Add category options
+  // Add category options dynamically
   categories.forEach(category => {
     const option = document.createElement('option');
     option.value = category;
     option.textContent = capitalizeFirstLetter(category);
     categorySelect.appendChild(option);
   });
-}
-
-// Show random quote based on selected category
-function showRandomQuote() {
-  const selectedCategory = categorySelect.value;
-  let filteredQuotes;
   
-  if (selectedCategory === 'all') {
-    filteredQuotes = quotes;
-  } else {
-    filteredQuotes = quotes.filter(quote => quote.category === selectedCategory);
-  }
-  
-  if (filteredQuotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available for this category.";
-    quoteAuthor.textContent = "";
-    quoteCategory.textContent = "";
-    return;
-  }
-  
-  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
-  const randomQuote = filteredQuotes[randomIndex];
-  
-  // Animate quote change
-  quoteDisplay.style.opacity = '0';
-  quoteAuthor.style.opacity = '0';
-  quoteCategory.style.opacity = '0';
-  
-  setTimeout(() => {
-    quoteDisplay.textContent = `"${randomQuote.text}"`;
-    quoteAuthor.textContent = `— ${randomQuote.author}`;
-    quoteCategory.textContent = `Category: ${capitalizeFirstLetter(randomQuote.category)}`;
-    
-    quoteDisplay.style.opacity = '1';
-    quoteAuthor.style.opacity = '1';
-    quoteCategory.style.opacity = '1';
-  }, 150);
-}
-
-// Handle adding new quote
-function handleAddQuote(event) {
-  event.preventDefault();
-  
-  const quoteText = document.getElementById('quote-text').value.trim();
-  const authorName = document.getElementById('quote-author-input').value.trim();
-  const categoryName = document.getElementById('quote-category-input').value.trim().toLowerCase();
-  
-  if (!quoteText || !authorName || !categoryName) {
-    alert('Please fill in all fields.');
-    return;
-  }
-  
-  // Create new quote object
-  const newQuote = {
-    text: quoteText,
-    author: authorName,
-    category: categoryName
-  };
-  
-  // Add to quotes array
-  quotes.push(newQuote);
-  
-  // Update UI
-  populateCategorySelect();
-  updateStatistics();
-  
-  // Clear form
-  addQuoteForm.reset();
-  
-  // Show success message
-  showSuccessMessage('Quote added successfully!');
-  
-  // If the new category is selected or "all" is selected, show the new quote
-  const selectedCategory = categorySelect.value;
-  if (selectedCategory === 'all' || selectedCategory === categoryName) {
-    setTimeout(() => {
-      showRandomQuote();
-    }, 1000);
+  // Restore previous selection if it still exists
+  if (currentSelection && (currentSelection === 'all' || categories.includes(currentSelection))) {
+    categorySelect.value = currentSelection;
   }
 }
 
-// Update statistics
+// Update statistics display
 function updateStatistics() {
   totalQuotesElement.textContent = quotes.length;
   totalCategoriesElement.textContent = getCategories().length;
 }
 
-// Show success message
+// Show success message with animation
 function showSuccessMessage(message) {
   const successDiv = document.createElement('div');
   successDiv.className = 'success-message';
@@ -198,7 +140,9 @@ function showSuccessMessage(message) {
   setTimeout(() => {
     successDiv.classList.remove('show');
     setTimeout(() => {
-      document.body.removeChild(successDiv);
+      if (document.body.contains(successDiv)) {
+        document.body.removeChild(successDiv);
+      }
     }, 300);
   }, 3000);
 }

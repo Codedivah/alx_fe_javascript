@@ -34,6 +34,74 @@ const defaultQuotes = [
   {
     text: "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.",
     category: "wisdom"
+  },
+  {
+    text: "Innovation distinguishes between a leader and a follower.",
+    category: "innovation"
+  },
+  {
+    text: "The best time to plant a tree was 20 years ago. The second best time is now.",
+    category: "wisdom"
+  },
+  {
+    text: "Your limitation—it's only your imagination.",
+    category: "motivation"
+  },
+  {
+    text: "Great things never come from comfort zones.",
+    category: "success"
+  },
+  {
+    text: "Dream it. Wish it. Do it.",
+    category: "dreams"
+  },
+  {
+    text: "Success doesn't just find you. You have to go out and get it.",
+    category: "success"
+  },
+  {
+    text: "The harder you work for something, the greater you'll feel when you achieve it.",
+    category: "motivation"
+  },
+  {
+    text: "Dream bigger. Do bigger.",
+    category: "dreams"
+  },
+  {
+    text: "Don't stop when you're tired. Stop when you're done.",
+    category: "motivation"
+  },
+  {
+    text: "Wake up with determination. Go to bed with satisfaction.",
+    category: "life"
+  },
+  {
+    text: "Do something today that your future self will thank you for.",
+    category: "life"
+  },
+  {
+    text: "Little things make big days.",
+    category: "wisdom"
+  },
+  {
+    text: "It's going to be hard, but hard does not mean impossible.",
+    category: "motivation"
+  },
+  {
+    text: "Don't wait for opportunity. Create it.",
+    category: "success"
+  },
+  {
+    text: "Sometimes we're tested not to show our weaknesses, but to discover our strengths.",
+    category: "wisdom"
+  },
+  {
+    text: "The key to success is to focus on goals, not obstacles.",
+    category: "success"
+  },
+  {
+    text: "Dream it. Believe it. Build it.",
+    category: "dreams"
   }
 ];
 
@@ -47,27 +115,37 @@ const totalCategoriesElement = document.getElementById('total-categories');
 const exportBtn = document.getElementById('export-btn');
 const importInput = document.getElementById('import-input');
 const importBtn = document.getElementById('import-btn');
+const categoryStatsContainer = document.getElementById('category-stats');
 
-// Local Storage key
+// Local Storage keys
 const STORAGE_KEY = 'quoteGeneratorData';
+const CATEGORY_PREFERENCE_KEY = 'selectedCategory';
 
 // Session Storage keys
 const SESSION_LAST_QUOTE_KEY = 'lastDisplayedQuote';
 const SESSION_PREFERENCES_KEY = 'userPreferences';
+const SESSION_FILTER_HISTORY_KEY = 'filterHistory';
+
+// Current filter state
+let currentFilter = 'all';
+let filterHistory = [];
 
 // Initialize the application
 function initializeApp() {
   loadQuotesFromStorage();
+  loadUserPreferences();
   loadSessionData();
-  populateCategorySelect();
+  populateCategories();
   updateStatistics();
+  updateCategoryStatistics();
   showRandomQuote();
   createAddQuoteForm();
   setupImportExport();
+  setupCategoryFiltering();
   
   // Event listeners
   generateBtn.addEventListener('click', showRandomQuote);
-  categorySelect.addEventListener('change', showRandomQuote);
+  categorySelect.addEventListener('change', handleCategoryChange);
 }
 
 // Load quotes from localStorage
@@ -101,6 +179,29 @@ function saveQuotesToStorage() {
   }
 }
 
+// Load user preferences from localStorage
+function loadUserPreferences() {
+  try {
+    const savedCategory = localStorage.getItem(CATEGORY_PREFERENCE_KEY);
+    if (savedCategory) {
+      currentFilter = savedCategory;
+      console.log('Loaded user preference - category:', currentFilter);
+    }
+  } catch (error) {
+    console.error('Error loading user preferences:', error);
+  }
+}
+
+// Save user preferences to localStorage
+function saveUserPreferences() {
+  try {
+    localStorage.setItem(CATEGORY_PREFERENCE_KEY, currentFilter);
+    console.log('Saved user preference - category:', currentFilter);
+  } catch (error) {
+    console.error('Error saving user preferences:', error);
+  }
+}
+
 // Load session-specific data
 function loadSessionData() {
   try {
@@ -111,15 +212,19 @@ function loadSessionData() {
       console.log('Last displayed quote from session:', quoteData.text);
     }
     
+    // Load filter history
+    const history = sessionStorage.getItem(SESSION_FILTER_HISTORY_KEY);
+    if (history) {
+      filterHistory = JSON.parse(history);
+      console.log('Loaded filter history:', filterHistory);
+    }
+    
     // Load user preferences
     const preferences = sessionStorage.getItem(SESSION_PREFERENCES_KEY);
     if (preferences) {
       const prefs = JSON.parse(preferences);
       if (prefs.selectedCategory) {
-        // Will be applied after category select is populated
-        setTimeout(() => {
-          categorySelect.value = prefs.selectedCategory;
-        }, 100);
+        currentFilter = prefs.selectedCategory;
       }
     }
   } catch (error) {
@@ -137,10 +242,10 @@ function saveCurrentQuoteToSession(quote) {
 }
 
 // Save user preferences to session storage
-function saveUserPreferences() {
+function saveUserPreferencesToSession() {
   try {
     const preferences = {
-      selectedCategory: categorySelect.value,
+      selectedCategory: currentFilter,
       timestamp: Date.now()
     };
     sessionStorage.setItem(SESSION_PREFERENCES_KEY, JSON.stringify(preferences));
@@ -149,13 +254,69 @@ function saveUserPreferences() {
   }
 }
 
-// Function to display a random quote based on selected category
-function showRandomQuote() {
-  const selectedCategory = categorySelect.value;
-  let filteredQuotes;
+// Save filter history to session storage
+function saveFilterHistoryToSession() {
+  try {
+    sessionStorage.setItem(SESSION_FILTER_HISTORY_KEY, JSON.stringify(filterHistory));
+  } catch (error) {
+    console.error('Error saving filter history to session storage:', error);
+  }
+}
+
+// Setup category filtering system
+function setupCategoryFiltering() {
+  // Apply saved category preference
+  if (currentFilter && currentFilter !== 'all') {
+    const categories = getCategories();
+    if (categories.includes(currentFilter)) {
+      categorySelect.value = currentFilter;
+    } else {
+      // Reset to 'all' if saved category no longer exists
+      currentFilter = 'all';
+      categorySelect.value = 'all';
+      saveUserPreferences();
+    }
+  }
   
-  // Save user preference
+  console.log('Category filtering setup complete. Current filter:', currentFilter);
+}
+
+// Handle category change event
+function handleCategoryChange() {
+  const newCategory = categorySelect.value;
+  
+  // Add to filter history if different from current
+  if (newCategory !== currentFilter) {
+    filterHistory.push({
+      from: currentFilter,
+      to: newCategory,
+      timestamp: Date.now()
+    });
+    
+    // Keep only last 10 filter changes
+    if (filterHistory.length > 10) {
+      filterHistory = filterHistory.slice(-10);
+    }
+    
+    saveFilterHistoryToSession();
+  }
+  
+  currentFilter = newCategory;
+  
+  // Save preferences
   saveUserPreferences();
+  saveUserPreferencesToSession();
+  
+  // Filter and display quotes
+  filterQuotes();
+  
+  console.log('Category changed to:', currentFilter);
+}
+
+// Filter quotes based on selected category
+function filterQuotes() {
+  const selectedCategory = currentFilter;
+  let filteredQuotes;
   
   // Filter quotes based on selected category
   if (selectedCategory === 'all') {
@@ -164,9 +325,20 @@ function showRandomQuote() {
     filteredQuotes = quotes.filter(quote => quote.category === selectedCategory);
   }
   
+  // Update quote display with filtered results
+  displayFilteredQuote(filteredQuotes, selectedCategory);
+  
+  // Update statistics for current filter
+  updateFilterStatistics(filteredQuotes, selectedCategory);
+  
+  console.log(`Filtered quotes for category "${selectedCategory}":`, filteredQuotes.length, 'quotes');
+}
+
+// Display a quote from filtered results
+function displayFilteredQuote(filteredQuotes, categoryName) {
   // Handle case when no quotes are available
   if (filteredQuotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available for this category.";
+    quoteDisplay.textContent = `No quotes available for the "${categoryName}" category.`;
     quoteCategory.textContent = "";
     return;
   }
@@ -191,6 +363,11 @@ function showRandomQuote() {
   }, 150);
 }
 
+// Function to display a random quote based on selected category
+function showRandomQuote() {
+  filterQuotes(); // Use the filtering system
+}
+
 // Function to create and handle the add quote form
 function createAddQuoteForm() {
   const addQuoteForm = document.getElementById('add-quote-form');
@@ -205,7 +382,7 @@ function createAddQuoteForm() {
     
     // Validate inputs
     if (!quoteText || !categoryName) {
-      alert('Please fill in both quote text and category fields.');
+      showErrorMessage('Please fill in both quote text and category fields.');
       return;
     }
     
@@ -228,15 +405,16 @@ function createAddQuoteForm() {
     addQuoteForm.reset();
     
     // Show success feedback
-    showSuccessMessage('Quote added and saved successfully!');
+    showSuccessMessage(`Quote added to "${capitalizeFirstLetter(categoryName)}" category!`);
     
     // If the new category is selected or "all" is selected, show the new quote
-    const selectedCategory = categorySelect.value;
-    if (selectedCategory === 'all' || selectedCategory === categoryName) {
+    if (currentFilter === 'all' || currentFilter === categoryName) {
       setTimeout(() => {
         showRandomQuote();
       }, 1000);
     }
+    
+    console.log('New quote added:', newQuote);
   });
 }
 
@@ -262,7 +440,12 @@ function exportQuotesToJSON() {
       quotes: quotes,
       exportDate: new Date().toISOString(),
       totalQuotes: quotes.length,
-      categories: getCategories()
+      categories: getCategories(),
+      categoryStats: getCategoryStatistics(),
+      userPreferences: {
+        lastSelectedCategory: currentFilter,
+        filterHistory: filterHistory
+      }
     };
     
     // Convert to JSON string with formatting
@@ -287,8 +470,8 @@ function exportQuotesToJSON() {
     // Clean up URL
     URL.revokeObjectURL(url);
     
-    showSuccessMessage('Quotes exported successfully!');
-    console.log('Exported', quotes.length, 'quotes to JSON file');
+    showSuccessMessage('Quotes exported successfully with category data!');
+    console.log('Exported', quotes.length, 'quotes with', getCategories().length, 'categories');
     
   } catch (error) {
     console.error('Error exporting quotes:', error);
@@ -344,6 +527,9 @@ function handleFileImport(event) {
         throw new Error('No valid quotes found in file');
       }
       
+      // Get categories before import
+      const categoriesBefore = getCategories();
+      
       // Ask user for confirmation
       const confirmMessage = `Import ${validQuotes.length} quotes? This will add them to your existing collection.`;
       if (confirm(confirmMessage)) {
@@ -356,8 +542,18 @@ function handleFileImport(event) {
         // Update DOM
         updateDOMAfterAddingQuote();
         
-        showSuccessMessage(`Successfully imported ${validQuotes.length} quotes!`);
+        // Get categories after import
+        const categoriesAfter = getCategories();
+        const newCategories = categoriesAfter.filter(cat => !categoriesBefore.includes(cat));
+        
+        let successMessage = `Successfully imported ${validQuotes.length} quotes!`;
+        if (newCategories.length > 0) {
+          successMessage += ` Added ${newCategories.length} new categories: ${newCategories.map(capitalizeFirstLetter).join(', ')}`;
+        }
+        
+        showSuccessMessage(successMessage);
         console.log('Imported', validQuotes.length, 'quotes from JSON file');
+        console.log('New categories added:', newCategories);
         
         // Show a random quote from the updated collection
         setTimeout(() => {
@@ -386,10 +582,17 @@ function handleFileImport(event) {
 // Update DOM elements after adding a new quote
 function updateDOMAfterAddingQuote() {
   // Update category dropdown
-  populateCategorySelect();
+  populateCategories();
   
   // Update statistics
   updateStatistics();
+  updateCategoryStatistics();
+  
+  // Update filter statistics if currently filtered
+  if (currentFilter !== 'all') {
+    const filteredQuotes = quotes.filter(quote => quote.category === currentFilter);
+    updateFilterStatistics(filteredQuotes, currentFilter);
+  }
 }
 
 // Get unique categories from quotes array
@@ -399,9 +602,9 @@ function getCategories() {
 }
 
 // Populate category select dropdown dynamically
-function populateCategorySelect() {
+function populateCategories() {
   const categories = getCategories();
-  const currentSelection = categorySelect.value;
+  const currentSelection = categorySelect.value || currentFilter;
   
   // Clear existing options except "All Categories"
   categorySelect.innerHTML = '<option value="all">All Categories</option>';
@@ -417,13 +620,80 @@ function populateCategorySelect() {
   // Restore previous selection if it still exists
   if (currentSelection && (currentSelection === 'all' || categories.includes(currentSelection))) {
     categorySelect.value = currentSelection;
+    currentFilter = currentSelection;
+  } else {
+    // Reset to 'all' if saved category no longer exists
+    categorySelect.value = 'all';
+    currentFilter = 'all';
+    saveUserPreferences();
   }
+  
+  console.log('Categories populated:', categories.length, 'categories');
+}
+
+// Get category statistics
+function getCategoryStatistics() {
+  const categories = getCategories();
+  const stats = {};
+  
+  categories.forEach(category => {
+    stats[category] = quotes.filter(quote => quote.category === category).length;
+  });
+  
+  return stats;
 }
 
 // Update statistics display
 function updateStatistics() {
   totalQuotesElement.textContent = quotes.length;
   totalCategoriesElement.textContent = getCategories().length;
+}
+
+// Update category-specific statistics
+function updateCategoryStatistics() {
+  const categoryStats = getCategoryStatistics();
+  const categories = Object.keys(categoryStats).sort();
+  
+  // Create or update category statistics display
+  if (!categoryStatsContainer) {
+    return; // Element doesn't exist in current HTML
+  }
+  
+  categoryStatsContainer.innerHTML = '';
+  
+  categories.forEach(category => {
+    const statItem = document.createElement('div');
+    statItem.className = 'category-stat-item';
+    statItem.innerHTML = `
+      <span class="category-name">${capitalizeFirstLetter(category)}</span>
+      <span class="category-count">${categoryStats[category]}</span>
+    `;
+    categoryStatsContainer.appendChild(statItem);
+  });
+}
+
+// Update filter-specific statistics
+function updateFilterStatistics(filteredQuotes, categoryName) {
+  // Update the quote count display for current filter
+  const filterInfo = document.createElement('div');
+  filterInfo.className = 'filter-info';
+  filterInfo.textContent = `Showing ${filteredQuotes.length} quotes`;
+  
+  if (categoryName !== 'all') {
+    filterInfo.textContent += ` in "${capitalizeFirstLetter(categoryName)}" category`;
+  }
+  
+  // Remove existing filter info
+  const existingFilterInfo = document.querySelector('.filter-info');
+  if (existingFilterInfo) {
+    existingFilterInfo.remove();
+  }
+  
+  // Add new filter info
+  const controls = document.querySelector('.controls');
+  if (controls) {
+    controls.appendChild(filterInfo);
+  }
 }
 
 // Show success message with animation

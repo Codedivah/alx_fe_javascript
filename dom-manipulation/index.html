@@ -1,23 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <title>Home</title>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <!--
-      Need a visual blank slate?
-      Remove all code in `styles.css`!
-    -->
-    <link rel="stylesheet" href="styles.css" />
-    <script type="module" src="script.js"></script>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Quote Generator</title>
   </head>
   <body>
-    <nav>
-      <a href="/" aria-current="page">Home</a>
-      <a href="/page2.html">Other page</a>
-    </nav>
-    <main>
-      <h1>Home page</h1>
-    </main>
+    <div id="app">
+      <header class="header">
+        <h1>Dynamic Quote Generator</h1>
+        <p class="subtitle">Discover wisdom from various categories or add your own quotes</p>
+      </header>
+
+      <main class="main-content">
+        <!-- Quote Display Section -->
+        <section class="quote-section">
+          <div class="quote-container">
+            <blockquote id="quote-display" class="quote-text">
+              Click "Generate Quote" to see a random quote
+            </blockquote>
+            <cite id="quote-author" class="quote-author"></cite>
+            <span id="quote-category" class="quote-category"></span>
+          </div>
+
+          <div class="controls">
+            <div class="category-selector">
+              <label for="category-select">Choose Category:</label>
+              <select id="category-select">
+                <option value="all">All Categories</option>
+              </select>
+            </div>
+            <button id="generate-btn" class="btn btn-primary">Generate Quote</button>
+          </div>
+        </section>
+
+        <!-- Add Quote Form Section -->
+        <section class="form-section">
+          <h2>Add Your Own Quote</h2>
+          <form id="add-quote-form" class="quote-form">
+            <div class="form-group">
+              <label for="quote-text">Quote Text:</label>
+              <textarea 
+                id="quote-text" 
+                placeholder="Enter your inspiring quote here..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="quote-author">Author:</label>
+              <input 
+                type="text" 
+                id="quote-author-input" 
+                placeholder="Author name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="quote-category-input">Category:</label>
+              <input 
+                type="text" 
+                id="quote-category-input" 
+                placeholder="e.g., Motivation, Life, Success"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Add Quote</button>
+          </form>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="stats-section">
+          <h3>Quote Statistics</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-number" id="total-quotes">0</span>
+              <span class="stat-label">Total Quotes</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" id="total-categories">0</span>
+              <span class="stat-label">Categories</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/script.js"></script>
   </body>
 </html>

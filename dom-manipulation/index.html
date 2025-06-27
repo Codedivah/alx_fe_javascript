@@ -10,7 +10,7 @@
     <div id="app">
       <header class="header">
         <h1>Dynamic Quote Generator</h1>
-        <p class="subtitle">Discover wisdom from various categories or add your own quotes</p>
+        <p class="subtitle">Discover wisdom from various categories with intelligent filtering</p>
       </header>
 
       <main class="main-content">
@@ -18,19 +18,68 @@
         <section class="quote-section">
           <div class="quote-container">
             <blockquote id="quote-display" class="quote-text">
-              Click "Generate Quote" to see a random quote
+              Select a category and click "Generate Quote" to see a random quote
             </blockquote>
             <span id="quote-category" class="quote-category"></span>
           </div>
 
           <div class="controls">
             <div class="category-selector">
-              <label for="category-select">Choose Category:</label>
+              <label for="category-select">Filter by Category:</label>
               <select id="category-select">
                 <option value="all">All Categories</option>
               </select>
             </div>
             <button id="generate-btn" class="btn btn-primary">Generate Quote</button>
+          </div>
+        </section>
+
+        <!-- Category Overview Section -->
+        <section class="category-overview">
+          <h3>Category Overview</h3>
+          <div class="category-grid">
+            <div class="category-card" data-category="all">
+              <div class="category-icon">🌟</div>
+              <div class="category-info">
+                <span class="category-title">All Categories</span>
+                <span class="category-description">Browse all available quotes</span>
+              </div>
+            </div>
+            <div class="category-card" data-category="motivation">
+              <div class="category-icon">💪</div>
+              <div class="category-info">
+                <span class="category-title">Motivation</span>
+                <span class="category-description">Inspiring quotes to fuel your drive</span>
+              </div>
+            </div>
+            <div class="category-card" data-category="life">
+              <div class="category-icon">🌱</div>
+              <div class="category-info">
+                <span class="category-title">Life</span>
+                <span class="category-description">Wisdom about life's journey</span>
+              </div>
+            </div>
+            <div class="category-card" data-category="success">
+              <div class="category-icon">🏆</div>
+              <div class="category-info">
+                <span class="category-title">Success</span>
+                <span class="category-description">Quotes about achieving greatness</span>
+              </div>
+            </div>
+            <div class="category-card" data-category="wisdom">
+              <div class="category-icon">🧠</div>
+              <div class="category-info">
+                <span class="category-title">Wisdom</span>
+                <span class="category-description">Timeless insights and knowledge</span>
+              </div>
+            </div>
+            <div class="category-card" data-category="dreams">
+              <div class="category-icon">✨</div>
+              <div class="category-info">
+                <span class="category-title">Dreams</span>
+                <span class="category-description">Quotes about pursuing your dreams</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -60,10 +109,13 @@
             
             <div class="storage-info">
               <p class="info-text">
-                <strong>💾 Auto-Save:</strong> Your quotes are automatically saved to your browser's local storage
+                <strong>💾 Auto-Save:</strong> Your quotes and category preferences are automatically saved
               </p>
               <p class="info-text">
-                <strong>🔄 Session Data:</strong> Your preferences and last viewed quote are preserved during your session
+                <strong>🔄 Smart Filtering:</strong> Your last selected category is remembered across sessions
+              </p>
+              <p class="info-text">
+                <strong>📊 Category Tracking:</strong> Filter history and preferences are preserved during your session
               </p>
             </div>
           </div>
@@ -87,9 +139,12 @@
               <input 
                 type="text" 
                 id="quote-category-input" 
-                placeholder="e.g., motivation, life, success"
+                placeholder="e.g., motivation, life, success, wisdom, dreams"
                 required
               />
+              <small class="form-hint">
+                💡 Tip: Use existing categories or create new ones. Categories are automatically added to the filter dropdown.
+              </small>
             </div>
 
             <button type="submit" class="btn btn-primary">Add Quote</button>

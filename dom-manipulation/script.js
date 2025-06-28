@@ -3,6 +3,9 @@ let quotes = [];
 let serverQuotes = [];
 let syncConflicts = 0;
 
+// API Configuration
+const API_BASE_URL = 'https://jsonplaceholder.typicode.com';
+
 // Default quotes to initialize the app if no data exists in localStorage
 const defaultQuotes = [
   {
@@ -88,7 +91,6 @@ const SESSION_FILTER_HISTORY_KEY = 'filterHistory';
 
 // Sync configuration
 const SYNC_INTERVAL = 30000; // 30 seconds
-const API_BASE_URL = 'https://jsonplaceholder.typicode.com';
 
 // Current state
 let currentFilter = 'all';

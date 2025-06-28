@@ -161,7 +161,7 @@ async function performSync() {
     updateSyncStatus('syncing');
     
     // Fetch server data
-    const serverData = await fetchServerQuotes();
+    const serverData = await fetchQuotesFromServer();
     
     // Merge and resolve conflicts
     const mergeResult = mergeQuotesWithConflictResolution(quotes, serverData);
@@ -195,7 +195,7 @@ async function performSync() {
   }
 }
 
-async function fetchServerQuotes() {
+async function fetchQuotesFromServer() {
   // Simulate fetching quotes from JSONPlaceholder posts
   const response = await fetch(`${API_BASE_URL}/posts?_limit=10`);
   

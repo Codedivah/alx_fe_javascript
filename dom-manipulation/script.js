@@ -120,6 +120,67 @@ function initializeApp() {
   window.addEventListener('offline', handleOfflineStatus);
 }
 
+// Main sync function - provides a clean interface for syncing operations
+async function syncQuotes() {
+  console.log('Starting quote synchronization...');
+  
+  if (!isOnline) {
+    console.log('Cannot sync quotes - device is offline');
+    showSyncNotification('Cannot sync while offline', 'error');
+    return false;
+  }
+  
+  try {
+    updateSyncStatus('syncing');
+    showSyncNotification('Synchronizing quotes with server...', 'info');
+    
+    // Fetch latest quotes from server
+    console.log('Fetching quotes from server...');
+    const serverData = await fetchQuotesFromServer();
+    console.log(`Received ${serverData.length} quotes from server`);
+    
+    // Merge server data with local quotes and handle conflicts
+    const mergeResult = mergeQuotesWithConflictResolution(quotes, serverData);
+    
+    // Handle any conflicts that were detected
+    if (mergeResult.hasConflicts) {
+      console.log(`Detected ${mergeResult.conflicts.length} conflicts during sync`);
+      handleSyncConflicts(mergeResult);
+    }
+    
+    // Update local data if new quotes were received
+    if (mergeResult.hasNewQuotes) {
+      console.log('New quotes received from server, updating local storage');
+      quotes = mergeResult.mergedQuotes;
+      saveQuotesToStorage();
+      updateDOMAfterSync();
+      showSyncNotification(`Received ${serverData.length} new quotes from server!`, 'success');
+    } else {
+      console.log('No new quotes received from server');
+      showSyncNotification('Sync completed - no new quotes', 'info');
+    }
+    
+    // Push any local changes to server
+    console.log('Syncing local changes to server...');
+    await syncLocalChangesToServer();
+    
+    // Update sync timestamp and status
+    lastSyncTimestamp = Date.now();
+    localStorage.setItem(LAST_SYNC_KEY, lastSyncTimestamp.toString());
+    updateSyncStatus('online');
+    updateLastSyncDisplay();
+    
+    console.log('Quote synchronization completed successfully');
+    return true;
+    
+  } catch (error) {
+    console.error('Quote synchronization failed:', error);
+    updateSyncStatus('error');
+    showSyncNotification('Sync failed. Will retry automatically.', 'error');
+    return false;
+  }
+}
+
 // Sync Management Functions
 function initializeSync() {
   updateSyncStatus();
@@ -141,11 +202,12 @@ function startAutoSync() {
   
   syncInterval = setInterval(() => {
     if (isOnline && autoSyncCheckbox.checked) {
+      console.log('Auto-sync triggered - checking for new quotes from server');
       performSync();
     }
   }, SYNC_INTERVAL);
   
-  console.log('Auto-sync started');
+  console.log(`Auto-sync started - will check server every ${SYNC_INTERVAL / 1000} seconds`);
 }
 
 function stopAutoSync() {
@@ -160,7 +222,7 @@ async function performSync() {
   try {
     updateSyncStatus('syncing');
     
-    // Fetch server data
+    // Fetch server data using the mock API
     const serverData = await fetchQuotesFromServer();
     
     // Merge and resolve conflicts
@@ -195,15 +257,19 @@ async function performSync() {
   }
 }
 
+// Fetch quotes from server using JSONPlaceholder mock API
 async function fetchQuotesFromServer() {
+  console.log('Fetching quotes from JSONPlaceholder API...');
+  
   // Simulate fetching quotes from JSONPlaceholder posts
   const response = await fetch(`${API_BASE_URL}/posts?_limit=10`);
   
   if (!response.ok) {
-    throw new Error('Failed to fetch server data');
+    throw new Error(`Failed to fetch server data: ${response.status} ${response.statusText}`);
   }
   
   const posts = await response.json();
+  console.log(`Successfully fetched ${posts.length} posts from server`);
   
   // Transform posts into quote format
   const serverQuotes = posts.map(post => ({
@@ -215,6 +281,7 @@ async function fetchQuotesFromServer() {
     serverId: post.id
   }));
   
+  console.log(`Transformed ${serverQuotes.length} posts into quote format`);
   return serverQuotes;
 }
 
@@ -223,9 +290,12 @@ function getRandomCategory() {
   return categories[Math.floor(Math.random() * categories.length)];
 }
 
+// Post local quotes to server using JSONPlaceholder mock API
 async function syncLocalChangesToServer() {
   // Simulate posting local quotes to server
   const localQuotes = quotes.filter(quote => quote.source === 'local' && !quote.synced);
+  
+  console.log(`Syncing ${localQuotes.length} local quotes to server...`);
   
   for (const quote of localQuotes) {
     try {
@@ -243,21 +313,28 @@ async function syncLocalChangesToServer() {
       
       if (response.ok) {
         quote.synced = true;
-        console.log('Synced local quote to server:', quote.text);
+        console.log('Successfully synced local quote to server:', quote.text);
+      } else {
+        console.error('Failed to sync quote to server:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Failed to sync quote to server:', error);
     }
   }
   
+  // Update local storage with sync status
   saveQuotesToStorage();
+  console.log('Completed syncing local quotes to server');
 }
 
+// Merge quotes with conflict resolution - server data takes precedence
 function mergeQuotesWithConflictResolution(localQuotes, serverQuotes) {
   const mergedQuotes = [...localQuotes];
   let hasConflicts = false;
   let hasNewQuotes = false;
   const conflicts = [];
+  
+  console.log(`Merging ${localQuotes.length} local quotes with ${serverQuotes.length} server quotes`);
   
   serverQuotes.forEach(serverQuote => {
     const existingQuote = mergedQuotes.find(q => q.id === serverQuote.id);
@@ -271,18 +348,24 @@ function mergeQuotesWithConflictResolution(localQuotes, serverQuotes) {
           server: serverQuote
         });
         
+        console.log('Conflict detected for quote ID:', serverQuote.id);
+        
         // Auto-resolve: server takes precedence
         if (conflictAutoResolveCheckbox.checked) {
           Object.assign(existingQuote, serverQuote);
           syncConflicts++;
+          console.log('Auto-resolved conflict - using server data');
         }
       }
     } else {
       // New quote from server
       mergedQuotes.push(serverQuote);
       hasNewQuotes = true;
+      console.log('Added new quote from server:', serverQuote.text);
     }
   });
+  
+  console.log(`Merge completed: ${conflicts.length} conflicts, ${hasNewQuotes ? 'has' : 'no'} new quotes`);
   
   return {
     mergedQuotes,
@@ -293,6 +376,8 @@ function mergeQuotesWithConflictResolution(localQuotes, serverQuotes) {
 }
 
 function handleSyncConflicts(mergeResult) {
+  console.log(`Handling ${mergeResult.conflicts.length} sync conflicts`);
+  
   if (conflictAutoResolveCheckbox.checked) {
     showSyncNotification(
       `${mergeResult.conflicts.length} conflicts auto-resolved (server data used)`,
@@ -300,12 +385,15 @@ function handleSyncConflicts(mergeResult) {
     );
     syncConflicts += mergeResult.conflicts.length;
     localStorage.setItem(SYNC_CONFLICTS_KEY, syncConflicts.toString());
+    console.log('Conflicts auto-resolved using server data');
   } else {
     showConflictResolutionBanner(mergeResult.conflicts);
   }
 }
 
 function showConflictResolutionBanner(conflicts) {
+  console.log('Showing conflict resolution banner for user input');
+  
   syncMessage.textContent = `${conflicts.length} data conflicts detected. Choose resolution method.`;
   syncAction.textContent = 'Use Server Data';
   syncAction.classList.remove('hidden');
@@ -313,6 +401,8 @@ function showConflictResolutionBanner(conflicts) {
   syncBanner.classList.add('conflict');
   
   syncAction.onclick = () => {
+    console.log('User chose to resolve conflicts using server data');
+    
     // Resolve conflicts by using server data
     conflicts.forEach(conflict => {
       const localQuote = quotes.find(q => q.id === conflict.local.id);
@@ -334,6 +424,8 @@ function showConflictResolutionBanner(conflicts) {
 }
 
 function showSyncNotification(message, type = 'info') {
+  console.log(`Sync notification (${type}):`, message);
+  
   syncMessage.textContent = message;
   syncAction.classList.add('hidden');
   syncBanner.classList.remove('hidden', 'conflict');
@@ -423,7 +515,7 @@ function setupSyncControls() {
   // Manual sync button
   manualSyncBtn.addEventListener('click', () => {
     if (isOnline) {
-      performSync();
+      syncQuotes(); // Use the new syncQuotes function
     } else {
       showSyncNotification('Cannot sync while offline', 'error');
     }
@@ -432,7 +524,7 @@ function setupSyncControls() {
   // Force sync button
   forceSyncBtn.addEventListener('click', () => {
     if (isOnline) {
-      performSync();
+      syncQuotes(); // Use the new syncQuotes function
     } else {
       showSyncNotification('Cannot sync while offline', 'error');
     }

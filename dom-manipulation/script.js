@@ -1,29 +1,28 @@
-"use strict"
 // Enhanced Quote Generator Application with Server Synchronization
 class QuoteGenerator {
     constructor() {
         // Default quotes collection with diverse categories
         this.defaultQuotes = [
-            { id: 'default_1', text: "The only way to do great work is to love what you do.", author: "Steve Jobs", category: "Motivation", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_2', text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon", category: "Life", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_3', text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", category: "Dreams", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_4', text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein", category: "Success", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_5', text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill", category: "Success", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_6', text: "The only impossible journey is the one you never begin.", author: "Tony Robbins", category: "Motivation", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_7', text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson", category: "Persistence", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_8', text: "Whether you think you can or you think you can't, you're right.", author: "Henry Ford", category: "Mindset", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_9', text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney", category: "Action", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_10', text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs", category: "Innovation", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_11', text: "Your limitation—it's only your imagination.", author: "Unknown", category: "Dreams", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_12', text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson", category: "Life", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_13', text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb", category: "Action", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_14', text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt", category: "Confidence", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_15', text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius", category: "Persistence", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_16', text: "Everything you've ever wanted is on the other side of fear.", author: "George Addair", category: "Courage", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_17', text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill", category: "Resilience", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_18', text: "The mind is everything. What you think you become.", author: "Buddha", category: "Mindset", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_19', text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky", category: "Opportunity", serverSync: true, lastModified: new Date('2024-01-01').toISOString() },
-            { id: 'default_20', text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein", category: "Purpose", serverSync: true, lastModified: new Date('2024-01-01').toISOString() }
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", category: "Motivation" },
+            { text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon", category: "Life" },
+            { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", category: "Dreams" },
+            { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein", category: "Success" },
+            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill", category: "Success" },
+            { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins", category: "Motivation" },
+            { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson", category: "Persistence" },
+            { text: "Whether you think you can or you think you can't, you're right.", author: "Henry Ford", category: "Mindset" },
+            { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney", category: "Action" },
+            { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs", category: "Innovation" },
+            { text: "Your limitation—it's only your imagination.", author: "Unknown", category: "Dreams" },
+            { text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson", category: "Life" },
+            { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb", category: "Action" },
+            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt", category: "Confidence" },
+            { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius", category: "Persistence" },
+            { text: "Everything you've ever wanted is on the other side of fear.", author: "George Addair", category: "Courage" },
+            { text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill", category: "Resilience" },
+            { text: "The mind is everything. What you think you become.", author: "Buddha", category: "Mindset" },
+            { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky", category: "Opportunity" },
+            { text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein", category: "Purpose" }
         ];
         
         this.quotes = [];
@@ -35,14 +34,24 @@ class QuoteGenerator {
         this.filterHistory = [];
         
         // Server sync properties
-        this.serverUrl = 'https://jsonplaceholder.typicode.com/posts';
-        this.syncInterval = 30000; // 30 seconds
-        this.syncTimer = null;
-        this.lastSyncTime = null;
-        this.isOnline = navigator.onLine;
+        this.serverQuotes = [];
         this.syncQueue = [];
+        this.conflictQueue = [];
+        this.lastSyncTime = null;
+        this.syncInterval = null;
+        this.isOnline = navigator.onLine;
         this.conflictResolutionMode = 'server-wins'; // 'server-wins', 'local-wins', 'manual'
-        this.pendingConflicts = [];
+        this.syncStatus = 'connecting'; // 'connecting', 'synced', 'syncing', 'error', 'offline'
+        
+        // Mock API configuration
+        this.apiConfig = {
+            baseUrl: 'https://jsonplaceholder.typicode.com',
+            endpoints: {
+                posts: '/posts',
+                users: '/users'
+            },
+            maxQuotes: 50 // Limit server quotes for better performance
+        };
         
         this.initializeApp();
         this.loadStoredData();
@@ -76,6 +85,7 @@ class QuoteGenerator {
             totalCategories: document.getElementById('total-categories'),
             userQuotes: document.getElementById('user-quotes'),
             sessionQuotes: document.getElementById('session-quotes'),
+            syncQueueCount: document.getElementById('sync-queue-count'),
             exportAllBtn: document.getElementById('export-all-btn'),
             exportUserBtn: document.getElementById('export-user-btn'),
             fileDropZone: document.getElementById('file-drop-zone'),
@@ -83,7 +93,7 @@ class QuoteGenerator {
             clearUserDataBtn: document.getElementById('clear-user-data-btn'),
             resetAllBtn: document.getElementById('reset-all-btn'),
             syncStatusBtn: document.getElementById('sync-status-btn'),
-            forceSync: document.getElementById('force-sync-btn'),
+            forceSyncBtn: document.getElementById('force-sync-btn'),
             conflictResolution: document.getElementById('conflict-resolution')
         };
 
@@ -155,24 +165,18 @@ class QuoteGenerator {
         });
 
         // Server sync controls
-        if (this.elements.syncStatusBtn) {
-            this.elements.syncStatusBtn.addEventListener('click', () => {
-                this.toggleSyncStatus();
-            });
-        }
+        this.elements.syncStatusBtn.addEventListener('click', () => {
+            this.showSyncDetails();
+        });
 
-        if (this.elements.forceSync) {
-            this.elements.forceSync.addEventListener('click', () => {
-                this.forceSyncWithServer();
-            });
-        }
+        this.elements.forceSyncBtn.addEventListener('click', () => {
+            this.forceSyncWithServer();
+        });
 
-        if (this.elements.conflictResolution) {
-            this.elements.conflictResolution.addEventListener('change', (e) => {
-                this.conflictResolutionMode = e.target.value;
-                this.saveUserPreferences();
-            });
-        }
+        this.elements.conflictResolution.addEventListener('change', (e) => {
+            this.conflictResolutionMode = e.target.value;
+            this.saveUserPreferences();
+        });
 
         // File handling
         this.elements.fileInput.addEventListener('change', (e) => {
@@ -207,24 +211,24 @@ class QuoteGenerator {
         window.addEventListener('online', () => {
             this.isOnline = true;
             this.updateSyncStatus();
-            this.showNotification('Connection restored - syncing data...', 'success');
             this.syncWithServer();
+            this.showNotification('Connection restored - syncing data...', 'success');
         });
 
         window.addEventListener('offline', () => {
             this.isOnline = false;
             this.updateSyncStatus();
-            this.showNotification('Working offline - changes will sync when connection is restored', 'warning');
+            this.showNotification('Working offline - changes will sync when connection is restored', 'info');
         });
 
         // Session and preference management
         window.addEventListener('beforeunload', () => {
             this.saveSessionData();
             this.saveUserPreferences();
-            this.stopSync();
+            this.saveSyncData();
         });
 
-        // Keyboard shortcuts for better UX
+        // Enhanced keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'n' && e.ctrlKey) {
                 e.preventDefault();
@@ -241,419 +245,641 @@ class QuoteGenerator {
         });
     }
 
-    // Server Synchronization Methods
-    initializeServerSync() {
-        // Load sync preferences
-        const syncEnabled = localStorage.getItem('quoteGenerator_syncEnabled');
-        const lastSync = localStorage.getItem('quoteGenerator_lastSync');
-        const conflictMode = localStorage.getItem('quoteGenerator_conflictMode');
-        
-        if (syncEnabled !== 'false') {
-            this.startSync();
-        }
-        
-        if (lastSync) {
-            this.lastSyncTime = new Date(lastSync);
-        }
-        
-        if (conflictMode) {
-            this.conflictResolutionMode = conflictMode;
-            if (this.elements.conflictResolution) {
-                this.elements.conflictResolution.value = conflictMode;
+    // ===== SERVER SYNCHRONIZATION METHODS =====
+
+    async initializeServerSync() {
+        try {
+            this.loadSyncData();
+            
+            // Initial server fetch
+            await this.fetchQuotesFromServer();
+            
+            // Start periodic sync
+            this.startPeriodicSync();
+            
+            // Process any pending sync queue
+            if (this.isOnline && this.syncQueue.length > 0) {
+                await this.processSyncQueue();
             }
-        }
-        
-        // Initial sync if online
-        if (this.isOnline) {
-            setTimeout(() => this.syncWithServer(), 2000);
+            
+            this.updateSyncStatus();
+            
+        } catch (error) {
+            console.error('Error initializing server sync:', error);
+            this.syncStatus = 'error';
+            this.updateSyncStatus();
         }
     }
 
-    startSync() {
-        if (this.syncTimer) {
-            clearInterval(this.syncTimer);
-        }
-        
-        this.syncTimer = setInterval(() => {
-            if (this.isOnline) {
-                this.syncWithServer();
-            }
-        }, this.syncInterval);
-        
-        localStorage.setItem('quoteGenerator_syncEnabled', 'true');
-        this.updateSyncStatus();
-    }
-
-    stopSync() {
-        if (this.syncTimer) {
-            clearInterval(this.syncTimer);
-            this.syncTimer = null;
-        }
-        
-        localStorage.setItem('quoteGenerator_syncEnabled', 'false');
-        this.updateSyncStatus();
-    }
-
-    async syncWithServer() {
+    async fetchQuotesFromServer() {
         if (!this.isOnline) {
+            this.syncStatus = 'offline';
             return;
         }
 
         try {
-            this.updateSyncStatus('syncing');
+            this.syncStatus = 'syncing';
+            this.updateSyncStatus();
+
+            // Fetch posts and users from JSONPlaceholder
+            const [postsResponse, usersResponse] = await Promise.all([
+                fetch(`${this.apiConfig.baseUrl}${this.apiConfig.endpoints.posts}`),
+                fetch(`${this.apiConfig.baseUrl}${this.apiConfig.endpoints.users}`)
+            ]);
+
+            if (!postsResponse.ok || !usersResponse.ok) {
+                throw new Error('Failed to fetch data from server');
+            }
+
+            const posts = await postsResponse.json();
+            const users = await usersResponse.json();
+
+            // Transform posts into meaningful quotes
+            const serverQuotes = this.transformPostsToQuotes(posts.slice(0, this.apiConfig.maxQuotes), users);
             
-            // Simulate fetching server data
-            const serverData = await this.fetchServerQuotes();
+            // Check for new quotes from server
+            const newServerQuotes = this.identifyNewServerQuotes(serverQuotes);
             
-            // Process server data and handle conflicts
-            const syncResult = await this.processServerData(serverData);
+            if (newServerQuotes.length > 0) {
+                // Add new server quotes to collection
+                this.serverQuotes = serverQuotes;
+                this.quotes = [...this.quotes, ...newServerQuotes];
+                
+                // Update UI
+                this.populateCategories();
+                this.updateStats();
+                
+                // Save updated data
+                this.saveToLocalStorage();
+                this.saveSyncData();
+                
+                this.showNotification(`Received ${newServerQuotes.length} new quotes from server`, 'success');
+            }
+
+            this.lastSyncTime = new Date().toISOString();
+            this.syncStatus = 'synced';
             
-            // Upload pending local changes
-            await this.uploadPendingChanges();
+        } catch (error) {
+            console.error('Error fetching quotes from server:', error);
+            this.syncStatus = 'error';
+            this.showNotification('Failed to sync with server', 'error');
+        } finally {
+            this.updateSyncStatus();
+        }
+    }
+
+    transformPostsToQuotes(posts, users) {
+        const categories = ['Inspiration', 'Wisdom', 'Success', 'Life', 'Motivation', 'Philosophy', 'Growth', 'Leadership'];
+        const quoteTemplates = [
+            'The key to success is understanding that {title}',
+            'Remember that {title}',
+            'Life teaches us that {title}',
+            'True wisdom comes from knowing that {title}',
+            'The path forward requires us to understand that {title}',
+            'Experience shows us that {title}',
+            'Growth happens when we realize that {title}',
+            'Leadership means understanding that {title}'
+        ];
+
+        return posts.map((post, index) => {
+            const user = users[index % users.length];
+            const template = quoteTemplates[index % quoteTemplates.length];
+            const category = categories[index % categories.length];
             
-            // Update last sync time
-            this.lastSyncTime = new Date();
-            localStorage.setItem('quoteGenerator_lastSync', this.lastSyncTime.toISOString());
+            // Create meaningful quote text from post title
+            let quoteText = template.replace('{title}', post.title.toLowerCase());
+            quoteText = quoteText.charAt(0).toUpperCase() + quoteText.slice(1);
             
-            this.updateSyncStatus('synced');
+            // Ensure proper punctuation
+            if (!quoteText.endsWith('.') && !quoteText.endsWith('!') && !quoteText.endsWith('?')) {
+                quoteText += '.';
+            }
+
+            return {
+                id: `server_${post.id}`,
+                text: quoteText,
+                author: user.name,
+                category: category,
+                isServerQuote: true,
+                serverTimestamp: new Date().toISOString(),
+                lastModified: new Date().toISOString()
+            };
+        });
+    }
+
+    identifyNewServerQuotes(serverQuotes) {
+        const existingServerIds = new Set(
+            this.quotes
+                .filter(quote => quote.isServerQuote)
+                .map(quote => quote.id)
+        );
+
+        return serverQuotes.filter(quote => !existingServerIds.has(quote.id));
+    }
+
+    async syncWithServer() {
+        if (!this.isOnline) {
+            this.syncStatus = 'offline';
+            this.updateSyncStatus();
+            return;
+        }
+
+        try {
+            // Fetch latest from server
+            await this.fetchQuotesFromServer();
             
-            if (syncResult.newQuotes > 0 || syncResult.conflicts > 0) {
-                this.showSyncNotification(syncResult);
+            // Process sync queue (upload local changes)
+            if (this.syncQueue.length > 0) {
+                await this.processSyncQueue();
+            }
+            
+            // Handle any conflicts
+            if (this.conflictQueue.length > 0) {
+                await this.handleConflicts();
             }
             
         } catch (error) {
-            console.error('Sync error:', error);
-            this.updateSyncStatus('error');
-            this.showNotification('Sync failed - will retry automatically', 'error');
+            console.error('Error during sync:', error);
+            this.syncStatus = 'error';
+            this.updateSyncStatus();
         }
     }
 
-    async fetchServerQuotes() {
-        // Simulate server API call using JSONPlaceholder
-        const response = await fetch(`${this.serverUrl}?_limit=10`);
-        const posts = await response.json();
-        
-        // Transform posts into quote format
-        const serverQuotes = posts.map(post => ({
-            id: `server_${post.id}`,
-            text: this.generateQuoteFromPost(post),
-            author: `User ${post.userId}`,
-            category: this.categorizePost(post),
-            serverSync: true,
-            lastModified: new Date(Date.now() - Math.random() * 86400000).toISOString(), // Random time within last day
-            serverId: post.id
-        }));
-        
-        return serverQuotes;
-    }
+    async processSyncQueue() {
+        if (!this.isOnline || this.syncQueue.length === 0) return;
 
-    generateQuoteFromPost(post) {
-        // Transform post content into quote-like text
-        const sentences = post.body.split('.').filter(s => s.trim().length > 10);
-        if (sentences.length > 0) {
-            let quote = sentences[0].trim();
-            if (quote.length > 100) {
-                quote = quote.substring(0, 97) + '...';
-            }
-            return quote.charAt(0).toUpperCase() + quote.slice(1);
-        }
-        return "Every moment is a fresh beginning.";
-    }
-
-    categorizePost(post) {
-        const categories = ['Inspiration', 'Wisdom', 'Life', 'Success', 'Motivation', 'Growth'];
-        return categories[post.id % categories.length];
-    }
-
-    async processServerData(serverQuotes) {
-        let newQuotes = 0;
-        let conflicts = 0;
-        let updated = 0;
+        const processedItems = [];
         
-        for (const serverQuote of serverQuotes) {
-            const existingQuote = this.quotes.find(q => q.id === serverQuote.id);
-            
-            if (!existingQuote) {
-                // New quote from server
-                this.quotes.push(serverQuote);
-                newQuotes++;
-            } else {
-                // Check for conflicts
-                const serverModified = new Date(serverQuote.lastModified);
-                const localModified = new Date(existingQuote.lastModified);
-                
-                if (serverModified > localModified) {
-                    if (this.hasConflict(existingQuote, serverQuote)) {
-                        conflicts++;
-                        await this.handleConflict(existingQuote, serverQuote);
-                    } else {
-                        // Update without conflict
-                        Object.assign(existingQuote, serverQuote);
-                        updated++;
-                    }
-                }
-            }
-        }
-        
-        if (newQuotes > 0 || updated > 0) {
-            this.saveToLocalStorage();
-            this.populateCategories();
-            this.updateStats();
-        }
-        
-        return { newQuotes, conflicts, updated };
-    }
-
-    hasConflict(localQuote, serverQuote) {
-        return (
-            localQuote.text !== serverQuote.text ||
-            localQuote.author !== serverQuote.author ||
-            localQuote.category !== serverQuote.category
-        ) && localQuote.isUserAdded;
-    }
-
-    async handleConflict(localQuote, serverQuote) {
-        const conflict = {
-            id: Date.now(),
-            local: localQuote,
-            server: serverQuote,
-            timestamp: new Date().toISOString()
-        };
-        
-        switch (this.conflictResolutionMode) {
-            case 'server-wins':
-                Object.assign(localQuote, serverQuote);
-                this.showNotification(`Conflict resolved: Server version accepted for "${localQuote.text.substring(0, 30)}..."`, 'info');
-                break;
-                
-            case 'local-wins':
-                // Keep local version, but mark as needs server update
-                localQuote.needsServerUpdate = true;
-                this.syncQueue.push(localQuote);
-                this.showNotification(`Conflict resolved: Local version kept for "${localQuote.text.substring(0, 30)}..."`, 'info');
-                break;
-                
-            case 'manual':
-                this.pendingConflicts.push(conflict);
-                this.showConflictDialog(conflict);
-                break;
-        }
-    }
-
-    showConflictDialog(conflict) {
-        const dialog = document.createElement('div');
-        dialog.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
-        dialog.innerHTML = `
-            <div class="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-                <h3 class="text-xl font-bold mb-4 text-gray-800">Data Conflict Detected</h3>
-                <p class="text-gray-600 mb-6">The same quote has been modified both locally and on the server. Choose which version to keep:</p>
-                
-                <div class="grid md:grid-cols-2 gap-4 mb-6">
-                    <div class="border rounded-lg p-4">
-                        <h4 class="font-semibold text-blue-600 mb-2">Local Version</h4>
-                        <blockquote class="text-sm mb-2">"${conflict.local.text}"</blockquote>
-                        <p class="text-xs text-gray-500">— ${conflict.local.author} (${conflict.local.category})</p>
-                        <p class="text-xs text-gray-400 mt-2">Modified: ${new Date(conflict.local.lastModified).toLocaleString()}</p>
-                    </div>
-                    
-                    <div class="border rounded-lg p-4">
-                        <h4 class="font-semibold text-green-600 mb-2">Server Version</h4>
-                        <blockquote class="text-sm mb-2">"${conflict.server.text}"</blockquote>
-                        <p class="text-xs text-gray-500">— ${conflict.server.author} (${conflict.server.category})</p>
-                        <p class="text-xs text-gray-400 mt-2">Modified: ${new Date(conflict.server.lastModified).toLocaleString()}</p>
-                    </div>
-                </div>
-                
-                <div class="flex gap-3 justify-end">
-                    <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600" onclick="this.closest('.fixed').remove(); window.quoteApp.resolveConflict('${conflict.id}', 'local')">
-                        Keep Local
-                    </button>
-                    <button class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600" onclick="this.closest('.fixed').remove(); window.quoteApp.resolveConflict('${conflict.id}', 'server')">
-                        Keep Server
-                    </button>
-                    <button class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600" onclick="this.closest('.fixed').remove(); window.quoteApp.resolveConflict('${conflict.id}', 'merge')">
-                        Merge Both
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(dialog);
-        window.quoteApp = this; // Temporary global reference for dialog buttons
-    }
-
-    resolveConflict(conflictId, resolution) {
-        const conflict = this.pendingConflicts.find(c => c.id == conflictId);
-        if (!conflict) return;
-        
-        const localQuote = this.quotes.find(q => q.id === conflict.local.id);
-        if (!localQuote) return;
-        
-        switch (resolution) {
-            case 'local':
-                localQuote.needsServerUpdate = true;
-                this.syncQueue.push(localQuote);
-                this.showNotification('Local version kept - will sync to server', 'success');
-                break;
-                
-            case 'server':
-                Object.assign(localQuote, conflict.server);
-                this.showNotification('Server version accepted', 'success');
-                break;
-                
-            case 'merge':
-                // Create a merged version
-                const mergedQuote = {
-                    ...conflict.server,
-                    text: `${conflict.local.text} ${conflict.server.text}`,
-                    lastModified: new Date().toISOString(),
-                    needsServerUpdate: true
-                };
-                Object.assign(localQuote, mergedQuote);
-                this.syncQueue.push(localQuote);
-                this.showNotification('Versions merged - will sync to server', 'success');
-                break;
-        }
-        
-        this.pendingConflicts = this.pendingConflicts.filter(c => c.id !== conflictId);
-        this.saveToLocalStorage();
-        this.populateCategories();
-        this.updateStats();
-    }
-
-    async uploadPendingChanges() {
-        if (this.syncQueue.length === 0) return;
-        
-        for (const quote of this.syncQueue) {
+        for (const item of this.syncQueue) {
             try {
-                // Simulate uploading to server
-                await this.uploadQuoteToServer(quote);
-                quote.needsServerUpdate = false;
+                await this.uploadQuoteToServer(item);
+                processedItems.push(item);
             } catch (error) {
-                console.error('Failed to upload quote:', error);
-                // Keep in queue for retry
+                console.error('Error uploading quote:', error);
+                // Keep failed items in queue for retry
             }
         }
         
-        // Remove successfully uploaded quotes
-        this.syncQueue = this.syncQueue.filter(q => q.needsServerUpdate);
+        // Remove successfully processed items
+        this.syncQueue = this.syncQueue.filter(item => !processedItems.includes(item));
+        
+        if (processedItems.length > 0) {
+            this.saveSyncData();
+            this.updateStats();
+            this.showNotification(`Synced ${processedItems.length} quotes to server`, 'success');
+        }
     }
 
     async uploadQuoteToServer(quote) {
-        // Simulate server upload
-        const response = await fetch(this.serverUrl, {
+        // Simulate server upload using JSONPlaceholder POST
+        const response = await fetch(`${this.apiConfig.baseUrl}/posts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                title: quote.text.substring(0, 50),
+                title: quote.text.substring(0, 50) + '...',
                 body: `${quote.text} - ${quote.author}`,
                 userId: 1
             })
         });
-        
+
         if (!response.ok) {
-            throw new Error('Upload failed');
+            throw new Error('Failed to upload quote to server');
         }
+
+        const result = await response.json();
         
-        return response.json();
+        // Mark quote as synced
+        quote.serverSynced = true;
+        quote.serverId = result.id;
+        quote.lastSynced = new Date().toISOString();
+        
+        return result;
     }
 
-    forceSyncWithServer() {
+    async handleConflicts() {
+        if (this.conflictQueue.length === 0) return;
+
+        for (const conflict of this.conflictQueue) {
+            switch (this.conflictResolutionMode) {
+                case 'server-wins':
+                    this.resolveConflictServerWins(conflict);
+                    break;
+                case 'local-wins':
+                    this.resolveConflictLocalWins(conflict);
+                    break;
+                case 'manual':
+                    await this.showConflictDialog(conflict);
+                    break;
+            }
+        }
+        
+        this.conflictQueue = [];
+        this.saveSyncData();
+    }
+
+    resolveConflictServerWins(conflict) {
+        const localIndex = this.quotes.findIndex(q => q.id === conflict.localQuote.id);
+        if (localIndex !== -1) {
+            this.quotes[localIndex] = { ...conflict.serverQuote };
+            this.showNotification(`Conflict resolved: Server version kept for "${conflict.serverQuote.text.substring(0, 30)}..."`, 'info');
+        }
+    }
+
+    resolveConflictLocalWins(conflict) {
+        // Add local quote to sync queue to overwrite server
+        this.syncQueue.push(conflict.localQuote);
+        this.showNotification(`Conflict resolved: Local version kept for "${conflict.localQuote.text.substring(0, 30)}..."`, 'info');
+    }
+
+    async showConflictDialog(conflict) {
+        return new Promise((resolve) => {
+            const dialog = document.createElement('div');
+            dialog.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+            dialog.innerHTML = `
+                <div class="conflict-dialog max-w-2xl w-full rounded-2xl p-8 max-h-[90vh] overflow-y-auto">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i data-lucide="alert-triangle" class="mr-3 text-orange-500"></i>
+                        Conflict Resolution Required
+                    </h3>
+                    
+                    <p class="text-gray-600 mb-6">
+                        The same quote has been modified both locally and on the server. Please choose which version to keep:
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="conflict-option p-6 rounded-xl bg-blue-50 cursor-pointer" data-choice="local">
+                            <h4 class="font-semibold text-blue-800 mb-3 flex items-center">
+                                <i data-lucide="smartphone" class="mr-2"></i>
+                                Local Version
+                            </h4>
+                            <blockquote class="text-gray-700 mb-2">"${conflict.localQuote.text}"</blockquote>
+                            <cite class="text-gray-600">— ${conflict.localQuote.author}</cite>
+                            <div class="text-sm text-gray-500 mt-2">Category: ${conflict.localQuote.category}</div>
+                        </div>
+                        
+                        <div class="conflict-option p-6 rounded-xl bg-green-50 cursor-pointer" data-choice="server">
+                            <h4 class="font-semibold text-green-800 mb-3 flex items-center">
+                                <i data-lucide="server" class="mr-2"></i>
+                                Server Version
+                            </h4>
+                            <blockquote class="text-gray-700 mb-2">"${conflict.serverQuote.text}"</blockquote>
+                            <cite class="text-gray-600">— ${conflict.serverQuote.author}</cite>
+                            <div class="text-sm text-gray-500 mt-2">Category: ${conflict.serverQuote.category}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end gap-4">
+                        <button class="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors" data-action="cancel">
+                            Cancel
+                        </button>
+                        <button class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors" data-action="confirm" disabled>
+                            Apply Choice
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            let selectedChoice = null;
+            
+            dialog.querySelectorAll('.conflict-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    dialog.querySelectorAll('.conflict-option').forEach(opt => opt.classList.remove('ring-2', 'ring-blue-500'));
+                    option.classList.add('ring-2', 'ring-blue-500');
+                    selectedChoice = option.dataset.choice;
+                    dialog.querySelector('[data-action="confirm"]').disabled = false;
+                });
+            });
+
+            dialog.querySelector('[data-action="cancel"]').addEventListener('click', () => {
+                document.body.removeChild(dialog);
+                resolve();
+            });
+
+            dialog.querySelector('[data-action="confirm"]').addEventListener('click', () => {
+                if (selectedChoice === 'local') {
+                    this.resolveConflictLocalWins(conflict);
+                } else if (selectedChoice === 'server') {
+                    this.resolveConflictServerWins(conflict);
+                }
+                document.body.removeChild(dialog);
+                resolve();
+            });
+
+            document.body.appendChild(dialog);
+            lucide.createIcons();
+        });
+    }
+
+    startPeriodicSync() {
+        // Clear existing interval
+        if (this.syncInterval) {
+            clearInterval(this.syncInterval);
+        }
+        
+        // Start new sync interval (every 30 seconds)
+        this.syncInterval = setInterval(() => {
+            if (this.isOnline) {
+                this.syncWithServer();
+            }
+        }, 30000);
+    }
+
+    async forceSyncWithServer() {
         if (!this.isOnline) {
             this.showNotification('Cannot sync while offline', 'error');
             return;
         }
-        
-        this.showNotification('Forcing sync with server...', 'info');
-        this.syncWithServer();
+
+        this.showNotification('Force syncing with server...', 'info');
+        await this.syncWithServer();
     }
 
-    toggleSyncStatus() {
-        if (this.syncTimer) {
-            this.stopSync();
-            this.showNotification('Auto-sync disabled', 'info');
-        } else {
-            this.startSync();
-            this.showNotification('Auto-sync enabled', 'success');
-        }
-    }
-
-    updateSyncStatus(status = null) {
+    updateSyncStatus() {
         if (!this.elements.syncStatusBtn) return;
+
+        const statusElement = this.elements.syncStatusBtn.querySelector('div');
+        const textElement = this.elements.syncStatusBtn.childNodes[1];
         
-        let statusText = '';
-        let statusClass = '';
+        let statusColor, statusText;
         
-        if (!this.isOnline) {
-            statusText = 'Offline';
-            statusClass = 'bg-red-500';
-        } else if (status === 'syncing') {
-            statusText = 'Syncing...';
-            statusClass = 'bg-yellow-500 pulse-animation';
-        } else if (status === 'synced') {
-            statusText = 'Synced';
-            statusClass = 'bg-green-500';
-        } else if (status === 'error') {
-            statusText = 'Sync Error';
-            statusClass = 'bg-red-500';
-        } else if (this.syncTimer) {
-            statusText = 'Auto-sync On';
-            statusClass = 'bg-blue-500';
+        switch (this.syncStatus) {
+            case 'synced':
+                statusColor = 'bg-green-500';
+                statusText = 'Synced';
+                break;
+            case 'syncing':
+                statusColor = 'bg-blue-500 animate-pulse';
+                statusText = 'Syncing...';
+                break;
+            case 'error':
+                statusColor = 'bg-red-500';
+                statusText = 'Sync Error';
+                break;
+            case 'offline':
+                statusColor = 'bg-gray-500';
+                statusText = 'Offline';
+                break;
+            default:
+                statusColor = 'bg-yellow-500';
+                statusText = 'Connecting...';
+        }
+        
+        statusElement.className = `w-3 h-3 rounded-full mr-2 ${statusColor}`;
+        textElement.textContent = statusText;
+    }
+
+    showSyncDetails() {
+        const lastSync = this.lastSyncTime ? new Date(this.lastSyncTime).toLocaleString() : 'Never';
+        const serverQuotesCount = this.quotes.filter(q => q.isServerQuote).length;
+        const pendingSync = this.syncQueue.length;
+        const conflicts = this.conflictQueue.length;
+        
+        let details = `Last Sync: ${lastSync}\n`;
+        details += `Server Quotes: ${serverQuotesCount}\n`;
+        details += `Pending Sync: ${pendingSync}\n`;
+        details += `Conflicts: ${conflicts}\n`;
+        details += `Status: ${this.syncStatus}\n`;
+        details += `Online: ${this.isOnline ? 'Yes' : 'No'}`;
+        
+        alert(details);
+    }
+
+    // ===== ENHANCED QUOTE MANAGEMENT WITH SYNC =====
+
+    addNewQuote() {
+        const quoteText = this.elements.quoteInput.value.trim();
+        const author = this.elements.authorInput.value.trim();
+        const category = this.elements.categoryInput.value.trim();
+
+        if (!quoteText || !author || !category) {
+            this.showNotification('Please fill in all fields', 'error');
+            return;
+        }
+
+        // Validate quote length
+        if (quoteText.length < 10) {
+            this.showNotification('Quote text should be at least 10 characters long', 'error');
+            return;
+        }
+
+        if (quoteText.length > 500) {
+            this.showNotification('Quote text should be less than 500 characters', 'error');
+            return;
+        }
+
+        // Check for duplicates
+        const isDuplicate = this.quotes.some(quote => 
+            quote.text.toLowerCase() === quoteText.toLowerCase() &&
+            quote.author.toLowerCase() === author.toLowerCase()
+        );
+
+        if (isDuplicate) {
+            this.showNotification('This quote already exists in your collection', 'error');
+            return;
+        }
+
+        const newQuote = {
+            id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            text: quoteText,
+            author: author,
+            category: category,
+            isUserAdded: true,
+            dateAdded: new Date().toISOString(),
+            lastModified: new Date().toISOString(),
+            serverSynced: false
+        };
+
+        this.quotes.push(newQuote);
+        this.userQuotesCount++;
+        
+        // Add to sync queue for server upload
+        this.syncQueue.push(newQuote);
+        
+        // Check if this is a new category
+        const wasNewCategory = !this.categoryPreferences[category];
+        
+        // Update categories and preferences
+        this.populateCategories();
+        
+        // If new category was added, show notification
+        if (wasNewCategory) {
+            this.showNotification(`New category "${category}" created!`, 'success');
+        }
+        
+        // Save to localStorage and sync data
+        this.saveToLocalStorage();
+        this.saveSyncData();
+        
+        // Update UI
+        this.updateStats();
+        
+        // Switch to the new quote's category and show it
+        this.filterQuotes(category);
+        this.displayQuote(newQuote);
+        
+        // Reset form and close
+        this.elements.quoteForm.reset();
+        this.toggleAddQuoteForm();
+        
+        // Attempt immediate sync if online
+        if (this.isOnline) {
+            this.syncWithServer();
+            this.showNotification('Quote added and queued for sync!', 'success');
         } else {
-            statusText = 'Auto-sync Off';
-            statusClass = 'bg-gray-500';
-        }
-        
-        this.elements.syncStatusBtn.innerHTML = `
-            <div class="w-3 h-3 rounded-full ${statusClass} mr-2"></div>
-            ${statusText}
-        `;
-        
-        // Update last sync time display
-        if (this.lastSyncTime) {
-            const timeAgo = this.getTimeAgo(this.lastSyncTime);
-            this.elements.syncStatusBtn.title = `Last sync: ${timeAgo}`;
+            this.showNotification('Quote added! Will sync when online.', 'success');
         }
     }
 
-    showSyncNotification(syncResult) {
-        let message = '';
-        
-        if (syncResult.newQuotes > 0) {
-            message += `${syncResult.newQuotes} new quotes received`;
-        }
-        
-        if (syncResult.conflicts > 0) {
-            if (message) message += ', ';
-            message += `${syncResult.conflicts} conflicts resolved`;
-        }
-        
-        if (syncResult.updated > 0) {
-            if (message) message += ', ';
-            message += `${syncResult.updated} quotes updated`;
-        }
-        
-        if (message) {
-            this.showNotification(`Sync complete: ${message}`, 'success');
+    // ===== ENHANCED STORAGE WITH SYNC DATA =====
+
+    loadSyncData() {
+        try {
+            const syncData = localStorage.getItem('quoteGenerator_syncData');
+            if (syncData) {
+                const parsed = JSON.parse(syncData);
+                this.syncQueue = parsed.syncQueue || [];
+                this.conflictQueue = parsed.conflictQueue || [];
+                this.lastSyncTime = parsed.lastSyncTime;
+                this.conflictResolutionMode = parsed.conflictResolutionMode || 'server-wins';
+                this.serverQuotes = parsed.serverQuotes || [];
+            }
+        } catch (error) {
+            console.error('Error loading sync data:', error);
         }
     }
 
-    getTimeAgo(date) {
-        const now = new Date();
-        const diff = now - date;
-        const minutes = Math.floor(diff / 60000);
-        
-        if (minutes < 1) return 'just now';
-        if (minutes < 60) return `${minutes}m ago`;
-        
-        const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours}h ago`;
-        
-        const days = Math.floor(hours / 24);
-        return `${days}d ago`;
+    saveSyncData() {
+        try {
+            const syncData = {
+                syncQueue: this.syncQueue,
+                conflictQueue: this.conflictQueue,
+                lastSyncTime: this.lastSyncTime,
+                conflictResolutionMode: this.conflictResolutionMode,
+                serverQuotes: this.serverQuotes,
+                lastSaved: new Date().toISOString()
+            };
+            localStorage.setItem('quoteGenerator_syncData', JSON.stringify(syncData));
+        } catch (error) {
+            console.error('Error saving sync data:', error);
+        }
     }
+
+    loadUserPreferences() {
+        try {
+            // Load category preferences
+            const storedPreferences = localStorage.getItem('quoteGenerator_categoryPreferences');
+            if (storedPreferences) {
+                this.categoryPreferences = JSON.parse(storedPreferences);
+            }
+            
+            // Load last selected category
+            const lastCategory = localStorage.getItem('quoteGenerator_lastCategory');
+            if (lastCategory && this.extractUniqueCategories().includes(lastCategory)) {
+                this.currentCategory = lastCategory;
+            }
+            
+            // Load filter history
+            const filterHistory = localStorage.getItem('quoteGenerator_filterHistory');
+            if (filterHistory) {
+                this.filterHistory = JSON.parse(filterHistory);
+            }
+            
+            // Load conflict resolution preference
+            const conflictMode = localStorage.getItem('quoteGenerator_conflictMode');
+            if (conflictMode) {
+                this.conflictResolutionMode = conflictMode;
+                if (this.elements.conflictResolution) {
+                    this.elements.conflictResolution.value = conflictMode;
+                }
+            }
+            
+        } catch (error) {
+            console.error('Error loading user preferences:', error);
+        }
+    }
+
+    saveUserPreferences() {
+        try {
+            localStorage.setItem('quoteGenerator_categoryPreferences', JSON.stringify(this.categoryPreferences));
+            localStorage.setItem('quoteGenerator_lastCategory', this.currentCategory);
+            localStorage.setItem('quoteGenerator_filterHistory', JSON.stringify(this.filterHistory));
+            localStorage.setItem('quoteGenerator_conflictMode', this.conflictResolutionMode);
+        } catch (error) {
+            console.error('Error saving user preferences:', error);
+        }
+    }
+
+    // ===== ENHANCED EXPORT/IMPORT WITH SYNC DATA =====
+
+    exportQuotes(type = 'all') {
+        try {
+            let quotesToExport;
+            let filename;
+            
+            if (type === 'user') {
+                quotesToExport = this.quotes.filter(quote => quote.isUserAdded);
+                filename = 'my-quotes-with-sync.json';
+                
+                if (quotesToExport.length === 0) {
+                    this.showNotification('No user quotes to export', 'error');
+                    return;
+                }
+            } else {
+                quotesToExport = this.quotes;
+                filename = 'all-quotes-with-sync.json';
+            }
+            
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                version: '3.0',
+                totalQuotes: quotesToExport.length,
+                categories: this.extractUniqueCategories().filter(cat => cat !== 'All'),
+                categoryPreferences: type === 'all' ? this.categoryPreferences : {},
+                filterHistory: type === 'all' ? this.filterHistory : [],
+                syncData: {
+                    lastSyncTime: this.lastSyncTime,
+                    conflictResolutionMode: this.conflictResolutionMode,
+                    syncQueueCount: this.syncQueue.length,
+                    serverQuotesCount: this.quotes.filter(q => q.isServerQuote).length
+                },
+                quotes: quotesToExport.map(quote => ({
+                    id: quote.id,
+                    text: quote.text,
+                    author: quote.author,
+                    category: quote.category,
+                    isUserAdded: quote.isUserAdded || false,
+                    isServerQuote: quote.isServerQuote || false,
+                    dateAdded: quote.dateAdded || new Date().toISOString(),
+                    lastModified: quote.lastModified || new Date().toISOString(),
+                    serverSynced: quote.serverSynced || false,
+                    serverId: quote.serverId
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            this.showNotification(`Successfully exported ${quotesToExport.length} quotes with sync metadata`, 'success');
+            
+        } catch (error) {
+            console.error('Error exporting quotes:', error);
+            this.showNotification('Error exporting quotes', 'error');
+        }
+    }
+
+    // ===== EXISTING METHODS (Updated for sync compatibility) =====
 
     // Enhanced Category Management
     populateCategories() {
@@ -713,15 +939,23 @@ class QuoteGenerator {
             const preference = this.categoryPreferences[category] || {};
             const isUserCreated = preference.isUserCreated;
             const quotesCount = this.getQuotesByCategory(category).length;
+            const serverQuotesCount = this.getQuotesByCategory(category).filter(q => q.isServerQuote).length;
+            
+            let categoryDisplay = category;
+            if (quotesCount > 0 && category !== 'All') {
+                categoryDisplay += ` (${quotesCount})`;
+            }
+            if (serverQuotesCount > 0 && category !== 'All') {
+                categoryDisplay += ` 🌐`;
+            }
             
             return `
                 <button 
                     class="category-pill px-6 py-2 rounded-full bg-white/20 text-white font-medium ${isActive} ${isUserCreated ? 'user-created' : ''}"
                     data-category="${category}"
-                    title="${category === 'All' ? 'All categories' : `${quotesCount} quotes in ${category}`}"
+                    title="${category === 'All' ? 'All categories' : `${quotesCount} quotes in ${category}${serverQuotesCount > 0 ? ` (${serverQuotesCount} from server)` : ''}`}"
                 >
-                    ${category}
-                    ${quotesCount > 0 && category !== 'All' ? `<span class="ml-2 text-xs opacity-75">(${quotesCount})</span>` : ''}
+                    ${categoryDisplay}
                     ${isUserCreated ? '<span class="ml-1 text-xs">✨</span>' : ''}
                 </button>
             `;
@@ -768,10 +1002,12 @@ class QuoteGenerator {
         
         // Show filter feedback
         const quotesCount = this.getQuotesByCategory(category).length;
+        const serverQuotesCount = this.getQuotesByCategory(category).filter(q => q.isServerQuote).length;
+        
         if (category === 'All') {
-            this.showNotification(`Showing all ${quotesCount} quotes`, 'info');
+            this.showNotification(`Showing all ${quotesCount} quotes${serverQuotesCount > 0 ? ` (${serverQuotesCount} from server)` : ''}`, 'info');
         } else {
-            this.showNotification(`Filtered to ${category}: ${quotesCount} quotes`, 'info');
+            this.showNotification(`Filtered to ${category}: ${quotesCount} quotes${serverQuotesCount > 0 ? ` (${serverQuotesCount} from server)` : ''}`, 'info');
         }
     }
 
@@ -837,102 +1073,26 @@ class QuoteGenerator {
             this.elements.quoteAuthor.textContent = `— ${quote.author}`;
             this.elements.quoteCategory.textContent = quote.category;
             
-            // Add visual indicators
+            // Add visual indicators for different quote types
             let indicators = '';
             if (quote.isUserAdded) {
-                indicators += ' <span title="Your quote">✨</span>';
+                indicators += ' <span title="Your quote" class="text-yellow-300">✨</span>';
             }
-            if (quote.serverSync) {
-                indicators += ' <span title="Synced with server">🔄</span>';
+            if (quote.isServerQuote) {
+                indicators += ' <span title="From server" class="text-blue-300">🌐</span>';
             }
-            if (quote.needsServerUpdate) {
-                indicators += ' <span title="Pending server sync">⏳</span>';
+            if (quote.serverSynced) {
+                indicators += ' <span title="Synced to server" class="text-green-300">✓</span>';
+            } else if (quote.isUserAdded && !quote.serverSynced) {
+                indicators += ' <span title="Pending sync" class="text-orange-300">⏳</span>';
             }
             
-            this.elements.quoteCategory.innerHTML = quote.category + indicators;
+            if (indicators) {
+                this.elements.quoteCategory.innerHTML += indicators;
+            }
             
             this.elements.quoteContainer.classList.remove('hidden');
         }, 150);
-    }
-
-    // Enhanced Quote Addition
-    addNewQuote() {
-        const quoteText = this.elements.quoteInput.value.trim();
-        const author = this.elements.authorInput.value.trim();
-        const category = this.elements.categoryInput.value.trim();
-
-        if (!quoteText || !author || !category) {
-            this.showNotification('Please fill in all fields', 'error');
-            return;
-        }
-
-        // Validate quote length
-        if (quoteText.length < 10) {
-            this.showNotification('Quote text should be at least 10 characters long', 'error');
-            return;
-        }
-
-        if (quoteText.length > 500) {
-            this.showNotification('Quote text should be less than 500 characters', 'error');
-            return;
-        }
-
-        // Check for duplicates
-        const isDuplicate = this.quotes.some(quote => 
-            quote.text.toLowerCase() === quoteText.toLowerCase() &&
-            quote.author.toLowerCase() === author.toLowerCase()
-        );
-
-        if (isDuplicate) {
-            this.showNotification('This quote already exists in your collection', 'error');
-            return;
-        }
-
-        const newQuote = {
-            id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            text: quoteText,
-            author: author,
-            category: category,
-            isUserAdded: true,
-            dateAdded: new Date().toISOString(),
-            lastModified: new Date().toISOString(),
-            needsServerUpdate: true
-        };
-
-        this.quotes.push(newQuote);
-        this.userQuotesCount++;
-        
-        // Add to sync queue if online
-        if (this.isOnline) {
-            this.syncQueue.push(newQuote);
-        }
-        
-        // Check if this is a new category
-        const wasNewCategory = !this.categoryPreferences[category];
-        
-        // Update categories and preferences
-        this.populateCategories();
-        
-        // If new category was added, show notification
-        if (wasNewCategory) {
-            this.showNotification(`New category "${category}" created!`, 'success');
-        }
-        
-        // Save to localStorage
-        this.saveToLocalStorage();
-        
-        // Update UI
-        this.updateStats();
-        
-        // Switch to the new quote's category and show it
-        this.filterQuotes(category);
-        this.displayQuote(newQuote);
-        
-        // Reset form and close
-        this.elements.quoteForm.reset();
-        this.toggleAddQuoteForm();
-        
-        this.showNotification('Quote added successfully! Will sync to server when online.', 'success');
     }
 
     populateExistingCategories() {
@@ -940,7 +1100,7 @@ class QuoteGenerator {
             .filter(cat => cat !== 'All')
             .sort();
         
-        // Group categories by user-created vs default
+        // Group categories by type
         const defaultCategories = categories.filter(cat => !this.isUserCreatedCategory(cat));
         const userCategories = categories.filter(cat => this.isUserCreatedCategory(cat));
         
@@ -950,7 +1110,8 @@ class QuoteGenerator {
             optionsHTML += '<optgroup label="Default Categories">';
             defaultCategories.forEach(category => {
                 const count = this.getQuotesByCategory(category).length;
-                optionsHTML += `<option value="${category}">${category} (${count})</option>`;
+                const serverCount = this.getQuotesByCategory(category).filter(q => q.isServerQuote).length;
+                optionsHTML += `<option value="${category}">${category} (${count}${serverCount > 0 ? `, ${serverCount} from server` : ''})</option>`;
             });
             optionsHTML += '</optgroup>';
         }
@@ -982,14 +1143,9 @@ class QuoteGenerator {
                 this.quotes = [...this.defaultQuotes];
             }
             
-            // Load sync queue
-            const syncQueue = localStorage.getItem('quoteGenerator_syncQueue');
-            if (syncQueue) {
-                this.syncQueue = JSON.parse(syncQueue);
-            }
-            
-            // Load user preferences
+            // Load user preferences and sync data
             this.loadUserPreferences();
+            this.loadSyncData();
             
             // Update UI after loading
             this.populateCategories();
@@ -1008,52 +1164,9 @@ class QuoteGenerator {
             localStorage.setItem('quoteGenerator_quotes', JSON.stringify(userQuotes));
             localStorage.setItem('quoteGenerator_userCount', this.userQuotesCount.toString());
             localStorage.setItem('quoteGenerator_lastSaved', new Date().toISOString());
-            localStorage.setItem('quoteGenerator_syncQueue', JSON.stringify(this.syncQueue));
         } catch (error) {
             console.error('Error saving to localStorage:', error);
             this.showNotification('Error saving data locally', 'error');
-        }
-    }
-
-    loadUserPreferences() {
-        try {
-            // Load category preferences
-            const storedPreferences = localStorage.getItem('quoteGenerator_categoryPreferences');
-            if (storedPreferences) {
-                this.categoryPreferences = JSON.parse(storedPreferences);
-            }
-            
-            // Load last selected category
-            const lastCategory = localStorage.getItem('quoteGenerator_lastCategory');
-            if (lastCategory && this.extractUniqueCategories().includes(lastCategory)) {
-                this.currentCategory = lastCategory;
-            }
-            
-            // Load filter history
-            const filterHistory = localStorage.getItem('quoteGenerator_filterHistory');
-            if (filterHistory) {
-                this.filterHistory = JSON.parse(filterHistory);
-            }
-            
-            // Load conflict resolution mode
-            const conflictMode = localStorage.getItem('quoteGenerator_conflictMode');
-            if (conflictMode) {
-                this.conflictResolutionMode = conflictMode;
-            }
-            
-        } catch (error) {
-            console.error('Error loading user preferences:', error);
-        }
-    }
-
-    saveUserPreferences() {
-        try {
-            localStorage.setItem('quoteGenerator_categoryPreferences', JSON.stringify(this.categoryPreferences));
-            localStorage.setItem('quoteGenerator_lastCategory', this.currentCategory);
-            localStorage.setItem('quoteGenerator_filterHistory', JSON.stringify(this.filterHistory));
-            localStorage.setItem('quoteGenerator_conflictMode', this.conflictResolutionMode);
-        } catch (error) {
-            console.error('Error saving user preferences:', error);
         }
     }
 
@@ -1087,98 +1200,6 @@ class QuoteGenerator {
         }
     }
 
-    // Enhanced Export/Import with Sync Data
-    exportQuotes(type = 'all') {
-        try {
-            let quotesToExport;
-            let filename;
-            
-            if (type === 'user') {
-                quotesToExport = this.quotes.filter(quote => quote.isUserAdded);
-                filename = 'my-quotes.json';
-                
-                if (quotesToExport.length === 0) {
-                    this.showNotification('No user quotes to export', 'error');
-                    return;
-                }
-            } else {
-                quotesToExport = this.quotes;
-                filename = 'all-quotes.json';
-            }
-            
-            const exportData = {
-                exportDate: new Date().toISOString(),
-                version: '3.0',
-                totalQuotes: quotesToExport.length,
-                categories: this.extractUniqueCategories().filter(cat => cat !== 'All'),
-                categoryPreferences: type === 'all' ? this.categoryPreferences : {},
-                filterHistory: type === 'all' ? this.filterHistory : [],
-                syncData: {
-                    lastSyncTime: this.lastSyncTime?.toISOString(),
-                    conflictResolutionMode: this.conflictResolutionMode,
-                    pendingSyncCount: this.syncQueue.length
-                },
-                quotes: quotesToExport.map(quote => ({
-                    id: quote.id,
-                    text: quote.text,
-                    author: quote.author,
-                    category: quote.category,
-                    isUserAdded: quote.isUserAdded || false,
-                    dateAdded: quote.dateAdded || new Date().toISOString(),
-                    lastModified: quote.lastModified || new Date().toISOString(),
-                    serverSync: quote.serverSync || false,
-                    needsServerUpdate: quote.needsServerUpdate || false
-                }))
-            };
-            
-            const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-                type: 'application/json'
-            });
-            
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            this.showNotification(`Successfully exported ${quotesToExport.length} quotes with sync data`, 'success');
-            
-        } catch (error) {
-            console.error('Error exporting quotes:', error);
-            this.showNotification('Error exporting quotes', 'error');
-        }
-    }
-
-    handleFileSelect(file) {
-        if (!file) return;
-        
-        if (file.type !== 'application/json') {
-            this.showNotification('Please select a valid JSON file', 'error');
-            return;
-        }
-        
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            try {
-                const importData = JSON.parse(e.target.result);
-                this.importQuotes(importData);
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                this.showNotification('Invalid JSON file format', 'error');
-            }
-        };
-        
-        reader.onerror = () => {
-            this.showNotification('Error reading file', 'error');
-        };
-        
-        reader.readAsText(file);
-    }
-
     importQuotes(importData) {
         try {
             let quotesToImport = [];
@@ -1196,9 +1217,7 @@ class QuoteGenerator {
                 
                 // Import sync data if available
                 if (importData.syncData) {
-                    if (importData.syncData.conflictResolutionMode) {
-                        this.conflictResolutionMode = importData.syncData.conflictResolutionMode;
-                    }
+                    this.conflictResolutionMode = importData.syncData.conflictResolutionMode || this.conflictResolutionMode;
                 }
             } else {
                 throw new Error('Invalid data structure');
@@ -1241,19 +1260,17 @@ class QuoteGenerator {
                         category: importQuote.category,
                         isUserAdded: true,
                         dateAdded: importQuote.dateAdded || new Date().toISOString(),
-                        lastModified: importQuote.lastModified || new Date().toISOString(),
-                        serverSync: importQuote.serverSync || false,
-                        needsServerUpdate: !importQuote.serverSync
+                        lastModified: new Date().toISOString(),
+                        serverSynced: false
                     };
                     
                     this.quotes.push(newQuote);
                     this.userQuotesCount++;
-                    newQuotes++;
                     
-                    // Add to sync queue if needs server update
-                    if (newQuote.needsServerUpdate && this.isOnline) {
-                        this.syncQueue.push(newQuote);
-                    }
+                    // Add to sync queue
+                    this.syncQueue.push(newQuote);
+                    
+                    newQuotes++;
                 } else {
                     duplicates++;
                 }
@@ -1262,8 +1279,14 @@ class QuoteGenerator {
             // Save and update UI
             this.saveToLocalStorage();
             this.saveUserPreferences();
+            this.saveSyncData();
             this.populateCategories();
             this.updateStats();
+            
+            // Attempt sync if online
+            if (this.isOnline && newQuotes > 0) {
+                this.syncWithServer();
+            }
             
             // Show results
             let message = `Successfully imported ${newQuotes} new quotes`;
@@ -1272,6 +1295,9 @@ class QuoteGenerator {
             }
             if (duplicates > 0) {
                 message += ` (${duplicates} duplicates skipped)`;
+            }
+            if (newQuotes > 0) {
+                message += `. ${this.isOnline ? 'Syncing to server...' : 'Will sync when online.'}`;
             }
             
             this.showNotification(message, 'success');
@@ -1284,41 +1310,64 @@ class QuoteGenerator {
                 }, 2000);
             }
             
-            // Trigger sync if online
-            if (this.isOnline && this.syncQueue.length > 0) {
-                setTimeout(() => this.syncWithServer(), 1000);
-            }
-            
         } catch (error) {
             console.error('Error importing quotes:', error);
             this.showNotification('Error importing quotes. Please check file format.', 'error');
         }
     }
 
+    handleFileSelect(file) {
+        if (!file) return;
+        
+        if (file.type !== 'application/json') {
+            this.showNotification('Please select a valid JSON file', 'error');
+            return;
+        }
+        
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            try {
+                const importData = JSON.parse(e.target.result);
+                this.importQuotes(importData);
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                this.showNotification('Invalid JSON file format', 'error');
+            }
+        };
+        
+        reader.onerror = () => {
+            this.showNotification('Error reading file', 'error');
+        };
+        
+        reader.readAsText(file);
+    }
+
     // Enhanced Data Management
     clearUserData() {
-        if (confirm('Are you sure you want to clear all your added quotes and preferences? This action cannot be undone.')) {
+        if (confirm('Are you sure you want to clear all your added quotes, sync queue, and preferences? This action cannot be undone.')) {
             try {
                 this.quotes = this.quotes.filter(quote => !quote.isUserAdded);
                 this.userQuotesCount = 0;
                 this.categoryPreferences = {};
                 this.filterHistory = [];
-                this.currentCategory = 'All';
                 this.syncQueue = [];
-                this.pendingConflicts = [];
+                this.conflictQueue = [];
+                this.currentCategory = 'All';
                 
                 localStorage.removeItem('quoteGenerator_quotes');
                 localStorage.removeItem('quoteGenerator_userCount');
                 localStorage.removeItem('quoteGenerator_categoryPreferences');
                 localStorage.removeItem('quoteGenerator_lastCategory');
                 localStorage.removeItem('quoteGenerator_filterHistory');
-                localStorage.removeItem('quoteGenerator_syncQueue');
+                localStorage.removeItem('quoteGenerator_syncData');
+                localStorage.removeItem('quoteGenerator_conflictMode');
                 
                 this.populateCategories();
                 this.updateStats();
                 this.showRandomQuote();
                 
-                this.showNotification('User data and preferences cleared successfully', 'success');
+                this.showNotification('User data, sync queue, and preferences cleared successfully', 'success');
             } catch (error) {
                 console.error('Error clearing user data:', error);
                 this.showNotification('Error clearing user data', 'error');
@@ -1327,11 +1376,16 @@ class QuoteGenerator {
     }
 
     resetAllData() {
-        if (confirm('Are you sure you want to reset everything to defaults? This will clear all data including session history, preferences, and sync data.')) {
+        if (confirm('Are you sure you want to reset everything to defaults? This will clear all data including server quotes, session history, and sync data.')) {
             try {
                 // Clear all storage
                 localStorage.clear();
                 sessionStorage.clear();
+                
+                // Stop sync interval
+                if (this.syncInterval) {
+                    clearInterval(this.syncInterval);
+                }
                 
                 // Reset to defaults
                 this.quotes = [...this.defaultQuotes];
@@ -1342,12 +1396,10 @@ class QuoteGenerator {
                 this.categoryPreferences = {};
                 this.filterHistory = [];
                 this.syncQueue = [];
-                this.pendingConflicts = [];
+                this.conflictQueue = [];
+                this.serverQuotes = [];
                 this.lastSyncTime = null;
-                
-                // Restart sync
-                this.stopSync();
-                this.startSync();
+                this.conflictResolutionMode = 'server-wins';
                 
                 // Update UI
                 this.populateCategories();
@@ -1355,7 +1407,10 @@ class QuoteGenerator {
                 this.showRandomQuote();
                 this.updateSyncStatus();
                 
-                this.showNotification('All data reset to defaults', 'success');
+                // Restart sync
+                this.initializeServerSync();
+                
+                this.showNotification('All data reset to defaults - reinitializing server sync...', 'success');
             } catch (error) {
                 console.error('Error resetting data:', error);
                 this.showNotification('Error resetting data', 'error');
@@ -1370,7 +1425,7 @@ class QuoteGenerator {
         
         if (isOpen) {
             section.classList.remove('open');
-            this.elements.addQuoteBtn.innerHTML = '<i data-lucide="plus" class="mr-2"></i>Add Quote<span class="shortcut-hint">(Ctrl+A)</span>';
+            this.elements.addQuoteBtn.innerHTML = '<i data-lucide="plus" class="mr-2"></i>Add Quote';
         } else {
             section.classList.add('open');
             this.elements.addQuoteBtn.innerHTML = '<i data-lucide="x" class="mr-2"></i>Cancel';
@@ -1391,7 +1446,7 @@ class QuoteGenerator {
         
         if (isOpen) {
             section.classList.remove('open');
-            this.elements.manageDataBtn.innerHTML = '<i data-lucide="database" class="mr-2"></i>Manage Data';
+            this.elements.manageDataBtn.innerHTML = '<i data-lucide="database" class="mr-2"></i>Manage Data & Sync';
         } else {
             section.classList.add('open');
             this.elements.manageDataBtn.innerHTML = '<i data-lucide="x" class="mr-2"></i>Close';
@@ -1419,18 +1474,17 @@ class QuoteGenerator {
         this.elements.totalCategories.textContent = this.extractUniqueCategories().length - 1; // Exclude 'All'
         this.elements.userQuotes.textContent = this.userQuotesCount;
         this.elements.sessionQuotes.textContent = this.sessionQuotesViewed;
+        this.elements.syncQueueCount.textContent = this.syncQueue.length;
     }
 
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 px-6 py-3 rounded-xl text-white font-medium z-50 transition-all duration-300 transform translate-x-full max-w-sm notification`;
+        notification.className = `fixed top-4 right-4 px-6 py-3 rounded-xl text-white font-medium z-50 transition-all duration-300 transform translate-x-full max-w-sm`;
         
         if (type === 'success') {
             notification.className += ' bg-green-500';
         } else if (type === 'error') {
             notification.className += ' bg-red-500';
-        } else if (type === 'warning') {
-            notification.className += ' bg-orange-500';
         } else {
             notification.className += ' bg-blue-500';
         }
